@@ -22,28 +22,21 @@ export default function NewsletterPopup() {
 
     // Check admin status
     const adminStatus = isAdmin()
-    console.log('NewsletterPopup: Admin check:', adminStatus, 'User:', getUser())
 
     // Don't show popup for admins
     if (adminStatus) {
-      console.log('NewsletterPopup: Admin detected, popup disabled')
       return
     }
 
     // Check if user has already seen the popup in this session
     const popupShown = sessionStorage.getItem('newsletterPopupShown')
-    console.log('NewsletterPopup: Session storage check:', popupShown)
 
     if (popupShown) {
-      console.log('NewsletterPopup: Already shown in this session')
       return
     }
 
-    console.log('NewsletterPopup: Setting up popup triggers...')
-
     // Show popup after 3 seconds
     const timer = setTimeout(() => {
-      console.log('NewsletterPopup: Timer triggered, showing popup')
       setIsOpen(true)
       setHasShown(true)
       sessionStorage.setItem('newsletterPopupShown', 'true')
@@ -104,7 +97,6 @@ export default function NewsletterPopup() {
         throw new Error(data.error || 'Failed to subscribe')
       }
 
-      console.log('Newsletter signup submitted:', email)
       setEmail('')
       setIsOpen(false)
       setIsSubmitting(false)
@@ -121,16 +113,12 @@ export default function NewsletterPopup() {
   // Don't render popup for admins
   const adminCheck = isAdmin()
   if (adminCheck) {
-    console.log('NewsletterPopup: Render blocked - admin user')
     return null
   }
 
   if (!isOpen) {
-    console.log('NewsletterPopup: Not open yet, waiting for trigger')
     return null
   }
-
-  console.log('NewsletterPopup: Rendering popup')
 
   return (
     <>
