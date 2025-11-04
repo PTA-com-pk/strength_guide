@@ -32,7 +32,7 @@ const nextConfig = {
   swcMinify: true,
   // Enable experimental features for better performance
   experimental: {
-    optimizeCss: true,
+    // optimizeCss requires 'critters' package - disabled to avoid build errors
     optimizePackageImports: ['@/components', '@/lib'],
     serverComponentsExternalPackages: ['paapi5-nodejs-sdk'],
   },

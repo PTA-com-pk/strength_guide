@@ -16,7 +16,7 @@ import FAQSection from '@/components/FAQSection'
 import NewsletterSection from '@/components/NewsletterSection'
 import connectDB from '@/lib/mongodb'
 import Article from '@/models/Article'
-import Category from '@/models/Category'
+import '@/models/Category' // Ensure Category model is registered
 
 // ISR: Revalidate every hour (3600 seconds)
 export const revalidate = 3600
@@ -39,6 +39,9 @@ export async function generateStaticParams() {
   try {
     await connectDB()
     
+    // Import Category model to ensure it's registered
+    await import('@/models/Category')
+    
     // Get the most popular articles (top 100) for pre-rendering
     const articles = await Article.find({
       publishedAt: { $ne: null },
@@ -54,7 +57,7 @@ export async function generateStaticParams() {
       slug: article.slug,
     }))
   } catch (error) {
-    console.error('Error generating static params:', error)
+    // Silently fail during build - return empty array
     return []
   }
 }
