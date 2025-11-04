@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getUser, isAdmin } from '@/lib/auth'
@@ -33,19 +33,7 @@ export default function AdminArticlesPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [categories, setCategories] = useState<Array<{ _id: string; name: string; slug: string }>>([])
 
-  useEffect(() => {
-    // Check admin access
-    const user = getUser()
-    if (!user || !isAdmin()) {
-      router.push('/login?redirect=/admin/articles')
-      return
-    }
-
-    fetchCategories()
-    fetchArticles()
-  }, [router, page, search, categoryFilter, statusFilter, proofreadFilter])
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const user = getUser()
       const res = await fetch('/api/admin/categories', {
@@ -60,9 +48,9 @@ export default function AdminArticlesPage() {
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
-  }
+  }, [])
 
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     try {
       setLoading(true)
       const user = getUser()
@@ -96,7 +84,19 @@ export default function AdminArticlesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router, page, search, categoryFilter, statusFilter, proofreadFilter])
+
+  useEffect(() => {
+    // Check admin access
+    const user = getUser()
+    if (!user || !isAdmin()) {
+      router.push('/login?redirect=/admin/articles')
+      return
+    }
+
+    fetchCategories()
+    fetchArticles()
+  }, [router, fetchCategories, fetchArticles])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this article?')) return

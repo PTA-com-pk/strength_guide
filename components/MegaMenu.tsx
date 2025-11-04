@@ -74,7 +74,7 @@ export default function MegaMenu({ category, isOpen, onClose, menuItemRef }: Meg
           setIsLoading(false)
         })
     }
-  }, [isOpen, category.slug])
+  }, [isOpen, category.slug, category.description, category.name, menuData])
 
   // Reset menu data when category changes
   useEffect(() => {

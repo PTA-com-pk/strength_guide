@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { getUser, isAdmin } from '@/lib/auth'
 import dynamic from 'next/dynamic'
@@ -17,23 +17,7 @@ export default function EditArticlePage() {
   const [loading, setLoading] = useState(true)
   const [article, setArticle] = useState<any>(null)
 
-  useEffect(() => {
-    // Check admin access
-    const user = getUser()
-    if (!user || !isAdmin()) {
-      router.push(`/login?redirect=/admin/articles/${articleId}/edit`)
-      return
-    }
-
-    if (articleId === 'new') {
-      setLoading(false)
-      return
-    }
-
-    fetchArticle()
-  }, [router, articleId])
-
-  const fetchArticle = async () => {
+  const fetchArticle = useCallback(async () => {
     try {
       const user = getUser()
       const res = await fetch(`/api/admin/articles/${articleId}`, {
@@ -60,7 +44,23 @@ export default function EditArticlePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [articleId, router])
+
+  useEffect(() => {
+    // Check admin access
+    const user = getUser()
+    if (!user || !isAdmin()) {
+      router.push(`/login?redirect=/admin/articles/${articleId}/edit`)
+      return
+    }
+
+    if (articleId === 'new') {
+      setLoading(false)
+      return
+    }
+
+    fetchArticle()
+  }, [router, articleId, fetchArticle])
 
   if (loading) {
     return (

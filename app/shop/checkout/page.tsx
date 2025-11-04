@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, useCallback, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { getUser } from '@/lib/auth'
 
@@ -38,6 +38,23 @@ export default function CheckoutPage() {
     paymentMethod: 'card',
   })
 
+  const fetchCart = useCallback(async () => {
+    try {
+      const res = await fetch('/api/cart')
+      if (res.ok) {
+        const data = await res.json()
+        setCart(data)
+        if (data.items.length === 0) {
+          router.push('/shop/cart')
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching cart:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [router])
+
   useEffect(() => {
     const currentUser = getUser()
     setUser(currentUser)
@@ -53,24 +70,7 @@ export default function CheckoutPage() {
     }
 
     fetchCart()
-  }, [])
-
-  const fetchCart = async () => {
-    try {
-      const res = await fetch('/api/cart')
-      if (res.ok) {
-        const data = await res.json()
-        setCart(data)
-        if (data.items.length === 0) {
-          router.push('/shop/cart')
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching cart:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [fetchCart])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()

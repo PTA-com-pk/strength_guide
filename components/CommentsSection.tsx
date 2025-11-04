@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, useCallback, FormEvent } from 'react'
 import { format } from 'date-fns'
 import { getUser } from '@/lib/auth'
 
@@ -42,19 +42,7 @@ export default function CommentsSection({ articleSlug }: CommentsSectionProps) {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const currentUser = getUser()
-    setUser(currentUser)
-    // Always set name and email - use user info if logged in, or defaults for anonymous
-    setFormData({
-      name: currentUser?.name || 'Anonymous User',
-      email: currentUser?.email || getAnonymousEmail(),
-      content: '',
-    })
-    fetchComments()
-  }, [articleSlug])
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       setLoading(true)
       // Handle both old format (just slug) and new format (category/slug)
@@ -81,7 +69,19 @@ export default function CommentsSection({ articleSlug }: CommentsSectionProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [articleSlug])
+
+  useEffect(() => {
+    const currentUser = getUser()
+    setUser(currentUser)
+    // Always set name and email - use user info if logged in, or defaults for anonymous
+    setFormData({
+      name: currentUser?.name || 'Anonymous User',
+      email: currentUser?.email || getAnonymousEmail(),
+      content: '',
+    })
+    fetchComments()
+  }, [articleSlug, fetchComments])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()

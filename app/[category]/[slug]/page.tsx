@@ -126,7 +126,7 @@ async function getRelatedArticles(
     return scoredArticles
       .sort((a: any, b: any) => b._relevanceScore - a._relevanceScore)
       .slice(0, limit)
-      .map(({ _relevanceScore, ...article }) => article)
+      .map(({ _relevanceScore, ...article }: { _relevanceScore: number; [key: string]: any }) => article)
   } catch {
     return []
   }

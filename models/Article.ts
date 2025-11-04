@@ -44,7 +44,6 @@ const ArticleSchema = new Schema<IArticle>(
   },
   {
     timestamps: true,
-    strictPopulate: false, // Allow populating fields that may not exist in all documents
   }
 )
 

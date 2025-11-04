@@ -570,12 +570,11 @@ export default function Header() {
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <MobileMenu
-          categories={allCategories}
-          onClose={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      <MobileMenu
+        categories={allCategories}
+        onClose={() => setIsMobileMenuOpen(false)}
+        isOpen={isMobileMenuOpen}
+      />
     </header>
   )
 }

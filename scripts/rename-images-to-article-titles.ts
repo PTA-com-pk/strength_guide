@@ -5,7 +5,7 @@ import { readdir, stat, rename, readFile } from 'fs/promises'
 import { join, basename, dirname, extname } from 'path'
 import { existsSync } from 'fs'
 
-async function sanitizeFilename(str: string): string {
+function sanitizeFilename(str: string): string {
   return str
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')

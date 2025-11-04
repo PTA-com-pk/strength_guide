@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { getUser } from '@/lib/auth'
 
@@ -30,13 +30,7 @@ export default function MediaSelector({ isOpen, onClose, onSelect, currentUrl }:
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchMedia()
-    }
-  }, [isOpen, page, search, typeFilter])
-
-  const fetchMedia = async () => {
+  const fetchMedia = useCallback(async () => {
     try {
       setLoading(true)
       const user = getUser()
@@ -63,7 +57,13 @@ export default function MediaSelector({ isOpen, onClose, onSelect, currentUrl }:
     } finally {
       setLoading(false)
     }
-  }
+  }, [page, search, typeFilter])
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchMedia()
+    }
+  }, [isOpen, page, search, typeFilter, fetchMedia])
 
   const handleSelect = (item: MediaItem) => {
     onSelect(item.url, item._id)

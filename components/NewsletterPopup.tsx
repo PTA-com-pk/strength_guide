@@ -19,11 +19,11 @@ export default function NewsletterPopup() {
   useEffect(() => {
     // Wait for component to mount
     if (!mounted || typeof window === 'undefined') return
-    
+
     // Check admin status
     const adminStatus = isAdmin()
     console.log('NewsletterPopup: Admin check:', adminStatus, 'User:', getUser())
-    
+
     // Don't show popup for admins
     if (adminStatus) {
       console.log('NewsletterPopup: Admin detected, popup disabled')
@@ -33,7 +33,7 @@ export default function NewsletterPopup() {
     // Check if user has already seen the popup in this session
     const popupShown = sessionStorage.getItem('newsletterPopupShown')
     console.log('NewsletterPopup: Session storage check:', popupShown)
-    
+
     if (popupShown) {
       console.log('NewsletterPopup: Already shown in this session')
       return
@@ -84,7 +84,7 @@ export default function NewsletterPopup() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    
+
     if (!email || !email.trim()) return
 
     setIsSubmitting(true)
@@ -129,7 +129,7 @@ export default function NewsletterPopup() {
     console.log('NewsletterPopup: Not open yet, waiting for trigger')
     return null
   }
-  
+
   console.log('NewsletterPopup: Rendering popup')
 
   return (
@@ -139,14 +139,14 @@ export default function NewsletterPopup() {
         className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
         onClick={handleClose}
       />
-      
+
       {/* Popup */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full relative overflow-hidden flex flex-col md:flex-row">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full relative overflow-hidden flex flex-col md:flex-row my-auto">
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10 bg-white rounded-full p-1 shadow-md"
+            className="absolute top-2 right-2 md:top-4 md:right-4 text-gray-400 hover:text-gray-600 transition-colors z-10 bg-white rounded-full p-1 shadow-md"
             aria-label="Close popup"
           >
             <svg
@@ -165,7 +165,7 @@ export default function NewsletterPopup() {
           </button>
 
           {/* Hero Image - Left Side */}
-          <div className="relative w-full md:w-1/2 h-64 md:h-auto min-h-[300px]">
+          <div className="relative w-full md:w-1/2 h-40 md:h-auto md:min-h-[300px]">
             <Image
               src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80"
               alt="Fitness workout"
@@ -178,20 +178,20 @@ export default function NewsletterPopup() {
           </div>
 
           {/* Content - Right Side */}
-          <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
-            <div className="mb-6">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+          <div className="w-full md:w-1/2 p-4 md:p-8 flex flex-col justify-center">
+            <div className="mb-4 md:mb-6">
+              <h2 className="text-2xl md:text-4xl font-black text-gray-900 mb-2 md:mb-3">
                 Get Free Workouts Weekly! 💪
               </h2>
-              <p className="text-gray-700 text-lg mb-2">
+              <p className="text-gray-700 text-base md:text-lg mb-1 md:mb-2">
                 Join 100,000+ fitness enthusiasts
               </p>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 Get expert tips, workout plans, and nutrition advice delivered to your inbox every week.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -199,20 +199,20 @@ export default function NewsletterPopup() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 min-h-[48px] border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-3 md:px-4 py-2.5 md:py-3 min-h-[44px] md:min-h-[48px] border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 text-gray-900 text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Email address for newsletter subscription"
               />
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 py-3 min-h-[48px] bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 md:px-6 py-2.5 md:py-3 min-h-[44px] md:min-h-[48px] bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-bold rounded-lg transition-colors text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Subscribe to newsletter"
               >
                 {isSubmitting ? 'Subscribing...' : 'Subscribe Free'}
               </button>
             </form>
 
-            <p className="text-xs text-gray-500 text-center mt-4">
+            <p className="text-xs text-gray-500 text-center mt-2 md:mt-4">
               🔒 We respect your privacy. Unsubscribe anytime.
             </p>
           </div>

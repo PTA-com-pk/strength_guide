@@ -53,18 +53,18 @@ export async function searchAmazonProducts(params: {
     
     // Map category to Amazon SearchIndex
     const searchIndexMap: Record<string, SearchIndex> = {
-      supplements: SearchIndex.HealthPersonalCare,
-      equipment: SearchIndex.SportsOutdoors,
-      apparel: SearchIndex.Apparel,
-      accessories: SearchIndex.SportsOutdoors,
+      supplements: SearchIndex.HEALTH,
+      equipment: SearchIndex.SPORTS,
+      apparel: SearchIndex.APPAREL,
+      accessories: SearchIndex.SPORTS,
     }
     
     const searchIndex = params.searchIndex || 
-      (params.category ? searchIndexMap[params.category] : SearchIndex.All)
+      (params.category ? searchIndexMap[params.category] : SearchIndex.ALL)
     
     const searchItemsRequest: SearchItemsRequest = {
       PartnerTag: AMAZON_PARTNER_TAG,
-      PartnerType: PartnerType.Associates,
+      PartnerType: PartnerType.ASSOCIATES,
       Keywords: params.keywords,
       SearchIndex: searchIndex,
       ItemCount: params.itemCount || 10,
@@ -173,9 +173,10 @@ export async function getAmazonProductByASIN(asin: string) {
     
     const getItemsRequest: GetItemsRequest = {
       PartnerTag: AMAZON_PARTNER_TAG,
-      PartnerType: PartnerType.Associates,
+      PartnerType: PartnerType.ASSOCIATES,
       ItemIds: [asin],
-      Condition: ItemCondition.New,
+      ItemIdType: 'ASIN',
+      Condition: ItemCondition.NEW,
       Resources: [
         Resources.ItemInfo.Title,
         Resources.ItemInfo.ByLineInfo,

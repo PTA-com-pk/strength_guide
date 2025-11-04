@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getUser } from '@/lib/auth'
 
 interface FavoriteButtonProps {
@@ -13,15 +13,7 @@ export default function FavoriteButton({ articleId, className = '' }: FavoriteBu
   const [isLoading, setIsLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
 
-  useEffect(() => {
-    const currentUser = getUser()
-    setUser(currentUser)
-    if (currentUser) {
-      checkFavoriteStatus(currentUser._id)
-    }
-  }, [articleId])
-
-  const checkFavoriteStatus = async (userId: string) => {
+  const checkFavoriteStatus = useCallback(async (userId: string) => {
     try {
       const res = await fetch('/api/user/favorites', {
         headers: { 'x-user-id': userId },
@@ -39,7 +31,15 @@ export default function FavoriteButton({ articleId, className = '' }: FavoriteBu
     } catch (error) {
       console.error('Error checking favorite status:', error)
     }
-  }
+  }, [articleId])
+
+  useEffect(() => {
+    const currentUser = getUser()
+    setUser(currentUser)
+    if (currentUser) {
+      checkFavoriteStatus(currentUser._id)
+    }
+  }, [articleId, checkFavoriteStatus])
 
   const handleToggleFavorite = async () => {
     if (!user) {

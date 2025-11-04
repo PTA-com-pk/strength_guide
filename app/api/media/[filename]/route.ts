@@ -40,7 +40,9 @@ export async function GET(
     }
 
     // Serve binary data from database
-    return new NextResponse(media.data, {
+    // Convert Binary to Buffer for NextResponse
+    const buffer = Buffer.from(media.data.buffer || media.data)
+    return new NextResponse(buffer, {
       headers: {
         'Content-Type': media.mimeType,
         'Content-Length': media.size.toString(),

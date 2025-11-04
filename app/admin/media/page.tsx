@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { getUser, isAdmin } from '@/lib/auth'
 import Image from 'next/image'
@@ -32,17 +32,7 @@ export default function MediaManagerPage() {
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
 
-  useEffect(() => {
-    const user = getUser()
-    if (!user || !isAdmin()) {
-      router.push('/login?redirect=/admin/media')
-      return
-    }
-
-    fetchMedia()
-  }, [router, page, search, typeFilter])
-
-  const fetchMedia = async () => {
+  const fetchMedia = useCallback(async () => {
     try {
       setLoading(true)
       const user = getUser()
@@ -74,7 +64,17 @@ export default function MediaManagerPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router, page, search, typeFilter])
+
+  useEffect(() => {
+    const user = getUser()
+    if (!user || !isAdmin()) {
+      router.push('/login?redirect=/admin/media')
+      return
+    }
+
+    fetchMedia()
+  }, [router, fetchMedia])
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

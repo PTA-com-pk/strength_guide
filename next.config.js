@@ -34,6 +34,24 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@/components', '@/lib'],
+    serverComponentsExternalPackages: ['paapi5-nodejs-sdk'],
+  },
+  // Webpack configuration to fix module resolution issues
+  webpack: (config, { isServer }) => {
+    // Fix for paapi5-nodejs-sdk module resolution issues
+    if (isServer) {
+      // Use preferRelative to handle relative imports in paapi5-nodejs-sdk
+      config.resolve.preferRelative = true
+      
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+    
+    return config
   },
   // Headers for better caching
   async headers() {
